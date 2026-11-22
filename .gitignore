@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+
+# mtkclient writes these at runtime
+log.txt
+logs/
+*.bin.done

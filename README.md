@@ -6,7 +6,7 @@ In other words: root your daily driver, plug the target MediaTek device into it 
 
 > **Status:** early and experimental. This is a vibecoded port, not an official release. Expect rough edges, and treat every write as permanent.
 >
-> **Nothing is implemented yet.** The repository currently contains only this README — there is no source code, no `requirements.txt` and no launcher. The install and usage sections below describe the **intended** interface so the design is fixed in writing before the port is built. Do not try to run them until the roadmap below is done.
+> **Only the skeleton exists.** The repository now holds an entry point (`mtk.py`), a dependency list (`requirements.txt`) and a root USB transport stub (`mtktermux/transport.py`). Device discovery, the root check, and opening a `/dev/bus/usb/...` node are real; interface claiming and bulk transfers raise `NotImplementedError`, so **no command can talk to a device yet**. The install and usage sections below describe the intended interface.
 
 ---
 
@@ -14,9 +14,9 @@ In other words: root your daily driver, plug the target MediaTek device into it 
 
 What has to exist before any of the commands below work:
 
-1. **A working USB transport.** A Python module that opens `/dev/bus/usb/<bus>/<dev>` as root and speaks the BROM/Preloader protocol — the piece Termux normally cannot provide, and the reason this port exists at all.
+1. **A working USB transport.** A Python module that opens `/dev/bus/usb/<bus>/<dev>` as root and speaks the BROM/Preloader protocol — the piece Termux normally cannot provide, and the reason this port exists at all. _Stubbed in `mtktermux/transport.py`: discovery, the root check and `open()` work, the transfers do not._
 2. **The mtkclient core, imported rather than rewritten.** Upstream's DA handling and command layer should be reused where possible, with the desktop-only USB backend swapped for the Termux one.
-3. **An entry point plus dependencies.** A `mtk.py` (or `mtk` wrapper) that runs inside Termux, and a pinned `requirements.txt` that installs cleanly against Termux's Python and `libusb`.
+3. **An entry point plus dependencies.** A `mtk.py` (or `mtk` wrapper) that runs inside Termux, and a pinned `requirements.txt` that installs cleanly against Termux's Python and `libusb`. _Scaffolded: `mtk.py` mirrors upstream's argparse layout (`create_base_parser`, per-command subparsers, `da`/`daa` subcommands) and `requirements.txt` pins the headless subset. Neither has been installed under Termux yet._
 4. **A verified device path.** At least one real MediaTek device talking to a rooted Android host over OTG, with `printgpt` and a read-only partition dump confirmed before any write path is advertised.
 5. **Write safety.** Read-back verification and a confirmation prompt for `w`, `wl`, `wf`, `e` and `es` before those are documented as usable.
 
@@ -61,7 +61,7 @@ Root is required for raw USB access, and the host's kernel must expose USB host 
 
 ## Installation — planned
 
-> Planned, not yet available: there is no source tree or dependency file in this repo yet, so the commands below will fail. They document the intended setup.
+> Planned: the dependency list is real and installs, but the tool cannot reach a device yet, so every command below stops at the same unimplemented transport step. This documents the intended setup.
 
 ```bash
 pkg update && pkg upgrade
@@ -168,6 +168,10 @@ This port stands on the shoulders of:
 - xyzz (kamakiri exploit) and chimera (linecode exploit)
 - Chaosmaster, Geert-Jan Kreileman (GUI) and all upstream contributors
 - The various Termux/Android port authors whose notes made root-based USB access practical
+
+## License
+
+GPL-3.0-or-later, matching [upstream mtkclient](https://github.com/bkerler/mtkclient). This port is a derivative work of that project — it is meant to reuse its DA handling and command layer — so it cannot be licensed more permissively. Full text in [`LICENSE`](LICENSE).
 
 ## Disclaimer
 

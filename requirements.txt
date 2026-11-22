@@ -1,0 +1,19 @@
+# Runtime dependencies for the rooted-Termux port.
+#
+# This is the headless subset of upstream bkerler/mtkclient's requirements.txt:
+# only what the BROM/Preloader path needs. Upstream also pulls in pyside6 and
+# shiboken6 (GUI, no Termux build), unicorn and keystone/keystone-engine (native
+# builds, exploit and patch paths) and mfusepy (FUSE mounting). Add them back
+# only if you port the code paths that import them.
+#
+# Install under Termux with: pip install -r requirements.txt
+# Refresh pins with:         python -m pip index versions <name>
+#
+# Pins taken from PyPI on 2026-11-22 and verified to download.
+
+pyusb==1.3.1
+pycryptodome==4.5.0
+pycryptodomex==3.24.2
+colorama==0.4.6
+pyserial==3.5
+capstone==5.0.9
